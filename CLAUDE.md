@@ -116,3 +116,74 @@ Building a full stack game tracking web app as a portfolio piece for job applica
 - Occasionally flag when something we're doing is particularly relevant to interviews
 - Help me understand not just how to build things but why we build them this way
 - The security angle is a differentiator — help me connect backend security concepts to my existing knowledge
+
+## Current State of the Project
+Last completed: Phase 1 — Foundation
+Next up: Phase 2 — Database & Auth
+
+## How to Run the Project
+Always need two terminals running simultaneously:
+
+### Terminal 1 — Frontend
+```bash
+cd client
+npm run dev
+# Runs on http://localhost:5173
+```
+
+### Terminal 2 — Backend
+```bash
+cd server
+npm run dev
+# Runs on http://localhost:5000
+```
+
+### To verify everything is working
+- Frontend: http://localhost:5173 should show the Game Tracker page
+- Backend: http://localhost:5000/api/health should return {"status":"ok","message":"Server is running"}
+- Frontend should display "Server is running" if both are running correctly
+
+## Concepts Already Explained
+Don't re-explain these from scratch, I understand them:
+- What React components, useState, useEffect, and JSX are
+- What Express, middleware, and routes are
+- What npm, npx, nodemon, ts-node, and Vite are
+- What package.json and tsconfig.json are and what they do
+- How fetch and Promises work
+- How Git add, commit, and push work
+- Why node_modules is gitignored
+- What CORS is and why it exists
+- The difference between dev and production scripts
+
+## Decisions Already Made
+- Using Vite not Create React App (CRA is deprecated)
+- TypeScript on both frontend and backend
+- Server runs on port 5000, client on port 5173
+- Conventional Commits format for git messages (feat:, chore:, docs: etc)
+- Building auth manually with JWT + bcrypt rather than using an auth library
+
+## File Structure So Far
+game-tracker/
+├── client/                  ← React + TypeScript (Vite)
+│   ├── src/
+│   │   ├── App.tsx          ← Root component, currently fetches /api/health
+│   │   └── main.tsx         ← Entry point, renders App into the DOM
+│   └── package.json
+├── server/                  ← Express + TypeScript
+│   ├── src/
+│   │   └── index.ts         ← Entry point, health check route
+│   ├── tsconfig.json
+│   └── package.json
+├── .gitignore
+├── CLAUDE.md
+└── README.md
+
+## Things to Cover in Phase 2
+- PostgreSQL installation and setup
+- Prisma ORM — schema definition, migrations, client
+- User model — id, username, email, password (hashed)
+- POST /api/auth/register endpoint
+- POST /api/auth/login endpoint
+- JWT generation and verification
+- Auth middleware to protect routes
+- Connecting it all to the frontend with a basic login form

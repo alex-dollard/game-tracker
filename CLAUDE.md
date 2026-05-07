@@ -1,4 +1,5 @@
-# Game Tracker — Project Document
+Here's the updated PROJECT.md with everything from Phase 2 incorporated:
+markdown# Game Tracker — Project Document
 
 ## Overview
 A full stack web app similar to IMDB but for games. Users can create accounts, log in, and track games they've played with details like playtime, completion status, and achievements. Additional features include a "want to play" list and review scores.
@@ -15,15 +16,33 @@ A full stack web app similar to IMDB but for games. Users can create accounts, l
 ## Tech Stack
 - **Frontend:** React + TypeScript (Vite)
 - **Backend:** Node.js + Express + TypeScript
-- **Database:** PostgreSQL + Prisma (coming in Phase 2)
-- **Auth:** JWT + bcrypt (coming in Phase 2)
+- **Database:** PostgreSQL + Prisma 6
+- **Auth:** JWT + bcrypt
 - **AI Integration:** Anthropic API (coming in Phase 5)
 - **Deployment:** Vercel (frontend) + Railway (backend + DB)
 
 ## Project Structure
 game-tracker/
-├── client/          ← React frontend (Vite, port 5173)
-├── server/          ← Express backend (port 5000)
+├── client/                  ← React + TypeScript (Vite)
+│   ├── src/
+│   │   ├── App.tsx          ← Root component, currently fetches /api/health
+│   │   └── main.tsx         ← Entry point, renders App into the DOM
+│   └── package.json
+├── server/                  ← Express + TypeScript
+│   ├── prisma/
+│   │   ├── schema.prisma    ← Database schema definition
+│   │   └── migrations/      ← Versioned SQL migrations (committed to git)
+│   ├── src/
+│   │   ├── index.ts         ← Entry point, mounts routes
+│   │   ├── routes/
+│   │   │   └── auth.ts      ← POST /api/auth/register, POST /api/auth/login
+│   │   ├── middleware/
+│   │   │   └── auth.ts      ← authenticateToken middleware, AuthRequest interface
+│   │   └── lib/
+│   │       └── prisma.ts    ← Singleton PrismaClient instance
+│   ├── tsconfig.json
+│   └── package.json
+├── docker-compose.yml       ← PostgreSQL container definition
 ├── .gitignore
 ├── PROJECT.md
 └── README.md
@@ -37,15 +56,16 @@ game-tracker/
 - Frontend successfully fetching from backend
 - .gitignore configured
 
-### Phase 2 — Database & Auth 🔄 Next
-- PostgreSQL database setup
-- Prisma ORM configuration
-- User table
-- Register and login endpoints
-- JWT authentication
-- Password hashing with bcrypt
+### Phase 2 — Database & Auth ✅
+- PostgreSQL running in Docker container with persistent volume
+- Prisma 6 ORM configured with postgresql datasource
+- User model — id, email, password, createdAt
+- POST /api/auth/register — bcrypt hashes password, stores user
+- POST /api/auth/login — verifies password, returns signed JWT
+- Auth middleware — verifies JWT, attaches userId to request
+- Bruno collection set up for API testing
 
-### Phase 3 — Core Features
+### Phase 3 — Core Features 🔄 Next
 - Games browsing
 - Adding games to your list
 - Playtime, completion, achievements tracking
@@ -66,20 +86,41 @@ game-tracker/
 - **TypeScript throughout** — catches errors early, looks good on CV, industry standard
 - **JWT auth built manually** — learning how auth works rather than hiding it behind a library
 - **PostgreSQL** — relational DB, industry standard, good for interviews
+- **Prisma 6 not 7** — Prisma 7 made breaking changes to schema format; version 6 is stable and what all tutorials/jobs use
+- **Docker for local DB** — reproducible setup, good for CV, anyone cloning can spin up identically
+- **Singleton PrismaClient** — one shared instance to avoid multiple connection pools
 
-## Running the Project
+## How to Run the Project
+
+### Prerequisites
+- Docker Desktop must be running
+
+### Terminal 1 — Database
 ```bash
-# Frontend (from /client)
-npm run dev        # runs on http://localhost:5173
-
-# Backend (from /server)
-npm run dev        # runs on http://localhost:5000
+# From project root
+docker compose up -d
 ```
 
-## How to Start a New Chat Session
-Paste the contents of this file at the start of the chat with a message like:
-"We're building a game tracker app. Here's our PROJECT.md: [paste]. We just finished X and are now working on Y."
+### Terminal 2 — Backend
+```bash
+cd server
+npm run dev
+# Runs on http://localhost:5000
+```
 
+### Terminal 3 — Frontend
+```bash
+cd client
+npm run dev
+# Runs on http://localhost:5173
+```
+
+### To verify everything is working
+- Frontend: http://localhost:5173 should show the Game Tracker page
+- Backend: http://localhost:5000/api/health should return `{"status":"ok","message":"Server is running"}`
+- Database: `docker ps` should show `game-tracker-db` with status `Up`
+
+---
 
 # Claude Instructions for This Project
 
@@ -117,32 +158,6 @@ Building a full stack game tracking web app as a portfolio piece for job applica
 - Help me understand not just how to build things but why we build them this way
 - The security angle is a differentiator — help me connect backend security concepts to my existing knowledge
 
-## Current State of the Project
-Last completed: Phase 1 — Foundation
-Next up: Phase 2 — Database & Auth
-
-## How to Run the Project
-Always need two terminals running simultaneously:
-
-### Terminal 1 — Frontend
-```bash
-cd client
-npm run dev
-# Runs on http://localhost:5173
-```
-
-### Terminal 2 — Backend
-```bash
-cd server
-npm run dev
-# Runs on http://localhost:5000
-```
-
-### To verify everything is working
-- Frontend: http://localhost:5173 should show the Game Tracker page
-- Backend: http://localhost:5000/api/health should return {"status":"ok","message":"Server is running"}
-- Frontend should display "Server is running" if both are running correctly
-
 ## Concepts Already Explained
 Don't re-explain these from scratch, I understand them:
 - What React components, useState, useEffect, and JSX are
@@ -154,6 +169,16 @@ Don't re-explain these from scratch, I understand them:
 - Why node_modules is gitignored
 - What CORS is and why it exists
 - The difference between dev and production scripts
+- What an ORM is and why we use Prisma
+- How bcrypt hashing works and why passwords are never stored plaintext
+- How JWTs work — header.payload.signature, signing, verification, expiry
+- Why error messages for login don't distinguish between wrong email vs wrong password (enumeration prevention)
+- What the Bearer token authorization header format is
+- What a singleton pattern is and why PrismaClient uses it
+- How Express Router works and why routes are split across files
+- How async/await works in TypeScript and why Node.js I/O is asynchronous
+- What database migrations are and why they're version controlled
+- What a unique index is and how Prisma's @unique maps to it in SQL
 
 ## Decisions Already Made
 - Using Vite not Create React App (CRA is deprecated)
@@ -161,29 +186,6 @@ Don't re-explain these from scratch, I understand them:
 - Server runs on port 5000, client on port 5173
 - Conventional Commits format for git messages (feat:, chore:, docs: etc)
 - Building auth manually with JWT + bcrypt rather than using an auth library
-
-## File Structure So Far
-game-tracker/
-├── client/                  ← React + TypeScript (Vite)
-│   ├── src/
-│   │   ├── App.tsx          ← Root component, currently fetches /api/health
-│   │   └── main.tsx         ← Entry point, renders App into the DOM
-│   └── package.json
-├── server/                  ← Express + TypeScript
-│   ├── src/
-│   │   └── index.ts         ← Entry point, health check route
-│   ├── tsconfig.json
-│   └── package.json
-├── .gitignore
-├── CLAUDE.md
-└── README.md
-
-## Things to Cover in Phase 2
-- PostgreSQL installation and setup
-- Prisma ORM — schema definition, migrations, client
-- User model — id, username, email, password (hashed)
-- POST /api/auth/register endpoint
-- POST /api/auth/login endpoint
-- JWT generation and verification
-- Auth middleware to protect routes
-- Connecting it all to the frontend with a basic login form
+- Prisma 6 pinned — do not upgrade to Prisma 7
+- Docker for local PostgreSQL — docker compose up -d from project root
+- Bruno for API testing

@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import authRoutes from './routes/auth';
-import { authenticateToken, AuthRequest } from './middleware/auth';
 
 dotenv.config();
 
@@ -20,8 +19,4 @@ app.use('/api/auth', authRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-});
-
-app.get('/api/protected', authenticateToken, (req: AuthRequest, res) => {
-  res.json({ message: 'You are authenticated', userId: req.userId });
 });

@@ -1,0 +1,18 @@
+info:
+  name: test authorization
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: http://localhost:5000/api/protected
+  headers:
+    - name: Authorization
+      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsImlhdCI6MTc3ODE1MTI5NSwiZXhwIjoxNzc4NzU2MDk1fQ.20J9E2BzaHUhBejkC3EY5hk4biuuY8FjjpNE0gU7Qiw
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

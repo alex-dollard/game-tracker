@@ -15,4 +15,38 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+  userGames UserGame[]
+}
+
+enum GameStatus {
+  PLAYING
+  COMPLETED
+  DROPPED
+  ON_HOLD
+  WANT_TO_PLAY
+}
+
+model Game{
+  id          Int       @id @default(autoincrement())
+  igdbId      Int       @unique
+  title       String
+  coverUrl    String?
+  releaseYear Int?
+  createdAt   DateTime  @default(now())
+  userGames   UserGame[]
+}
+
+model UserGame {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  gameId      Int
+  status      GameStatus
+  score       Int?
+  notes       String?
+  createdAt   DateTime  @default(now())
+
+  user        User      @relation(fields: [userId], references: [id])
+  game        Game      @relation(fields: [gameId], references: [id])
+
+  @@unique([userId, gameId])
 }

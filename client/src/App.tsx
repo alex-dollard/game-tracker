@@ -1,22 +1,35 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import HomePage from './pages/HomePage';
 
-function App() {
-  const [serverStatus, setServerStatus] = useState<string>('Checking...');
+export default function App() {
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
 
-  useEffect(() => {
-    fetch('http://localhost:5000/api/health')
-    .then(res => res.json())
-    .then(data => setServerStatus(data.message))
-    .catch(() => setServerStatus('Could not reach server'));
-  }, []);
+  const handleLogin = (jwt: string) => {
+    localStorage.setItem('token', jwt);
+    setToken(jwt);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+  };
 
   return (
-    <div>
-      <h1>Game Tracker</h1>
-      <p>Server status: {serverStatus}</p>
-    </div>
-  );
-
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={
+          token ? <Navigate to="/" /> : <LoginPage onLogin={handleLogin} />
+        } />
+        <Route path="/register" element={
+          token ? <Navigate to="/" /> : <RegisterPage />
+        } />
+        <Route path="/" element={
+          token ? <HomePage token={token} onLogout={handleLogout} /> : <Navigate to="/login" />
+        } />
+      </Routes>
+    </BrowserRouter>
+  )
 }
-
-export default App;

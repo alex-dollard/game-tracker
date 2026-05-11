@@ -1,0 +1,28 @@
+info:
+  name: add a game
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://localhost:5000/api/games/list
+  headers:
+    - name: Authorization
+      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsImlhdCI6MTc3ODQ5ODU4MSwiZXhwIjoxNzc5MTAzMzgxfQ.xygTO9zgkwonbjr-OJ30-GpMibL0RyuEDRV11K2j46w
+  body:
+    type: json
+    data: |-
+      {
+        "igdbId": 740,
+        "title": "Halo: Combat Evolved",
+        "coverUrl": "https://images.igdb.com/igdb/image/upload/t_thumb/co2r2r.jpg",
+        "releaseYear": 2001,
+        "status": "WANT_TO_PLAY"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

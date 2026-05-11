@@ -1,0 +1,18 @@
+info:
+  name: delete an entry
+  type: http
+  seq: 12
+
+http:
+  method: DELETE
+  url: http://localhost:5000/api/games/list/1
+  headers:
+    - name: Authorization
+      value: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsImlhdCI6MTc3ODQ5ODU4MSwiZXhwIjoxNzc5MTAzMzgxfQ.xygTO9zgkwonbjr-OJ30-GpMibL0RyuEDRV11K2j46w
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
